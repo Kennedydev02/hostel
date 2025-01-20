@@ -1,102 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCheckIn } from '../../contexts/CheckInContext';
 import {
   Box,
   Button,
-  Typography,
   Container,
   Paper,
-  Card,
-  CardContent,
-  Divider,
+  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Divider
 } from '@mui/material';
-import {
-  ArrowBack,
-  ArrowForward,
-  CalendarMonth,
-  NightsStay,
-} from '@mui/icons-material';
+import { CalendarToday, AttachMoney } from '@mui/icons-material';
 
-const DAILY_RATE = 50;
-
-const FeeCalculator = () => {
+const FeeCalculator = ({ formData, setFormData }) => {
   const navigate = useNavigate();
-  const { checkInData, updateCheckInData } = useCheckIn();
-  const [fees, setFees] = useState({
-    numberOfDays: 0,
-    totalAmount: 0
-  });
+  
+  const checkIn = formData?.dates?.checkIn ? new Date(formData.dates.checkIn) : null;
+  const checkOut = formData?.dates?.checkOut ? new Date(formData.dates.checkOut) : null;
+  
+  const numberOfDays = (checkIn && checkOut) ? 
+    Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24)) : 0;
+  const ratePerDay = 50;
+  const totalAmount = numberOfDays * ratePerDay;
 
-  useEffect(() => {
-    if (checkInData?.dates?.checkIn && checkInData?.dates?.checkOut) {
-      const start = new Date(checkInData.dates.checkIn);
-      const end = new Date(checkInData.dates.checkOut);
-      
-      const diffTime = Math.abs(end - start);
-      const numberOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      const totalAmount = numberOfDays * DAILY_RATE;
-
-      const newFees = {
+  const handleNextClick = () => {
+    setFormData(prev => ({
+      ...prev,
+      fees: {
         numberOfDays,
+        ratePerDay,
         totalAmount
-      };
-
-      setFees(newFees);
-      updateCheckInData('fees', newFees);
-    }
-  }, [checkInData.dates, updateCheckInData]);
-
-  const formatCurrency = (amount) => {
-    return Number(amount).toFixed(2);
+      }
+    }));
+    navigate('/payment-options');
   };
 
-  const handleNext = async () => {
-    try {
-      const bookingData = {
-        personalDetails: checkInData.personalDetails,
-        dates: checkInData.dates,
-        fees: {
-          numberOfDays: fees.numberOfDays,
-          totalAmount: fees.totalAmount
-        },
-        payment: {
-          method: 'Pay at Office',
-          status: 'pending'
-        }
-      };
-
-      const response = await fetch('http://localhost:5001/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData)
-      });
-
-      if (response.ok) {
-        navigate('/payment-options');
-      }
-    } catch (error) {
-      console.error('Error saving booking:', error);
-    }
+  const handleBack = () => {
+    navigate('/date-selection');
   };
 
   return (
-    <Container maxWidth="sm">
-      <Paper
-        elevation={3}
-        sx={{
-          p: 3,
-          mt: 2,
-          borderRadius: '16px',
-          background: 'linear-gradient(145deg, #ffffff 0%, #f8faff 100%)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          minHeight: 'fit-content',
-        }}
-      >
+    <Container component="main" maxWidth="sm">
+      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
         <Typography variant="h4" gutterBottom align="center" sx={{ color: 'primary.main' }}>
           Fee Summary
         </Typography>
@@ -105,100 +52,44 @@ const FeeCalculator = () => {
           Review your booking fees
         </Typography>
 
-        <Card sx={{ mb: 2 }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <CalendarMonth sx={{ color: 'primary.main', mr: 1 }} />
-              <Box>
-                <Typography variant="body2" color="text.secondary">
-                  Check-in
-                </Typography>
-                <Typography variant="body1">
-                  {checkInData?.dates?.checkIn || 'Not selected'}
-                </Typography>
-              </Box>
-            </Box>
+        <List>
+          <ListItem>
+            <ListItemIcon>
+              <CalendarToday />
+            </ListItemIcon>
+            <ListItemText primary="Check-in" secondary={checkIn ? checkIn.toLocaleDateString() : 'Not selected'} />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <CalendarToday />
+            </ListItemIcon>
+            <ListItemText primary="Check-out" secondary={checkOut ? checkOut.toLocaleDateString() : 'Not selected'} />
+          </ListItem>
+        </List>
 
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <CalendarMonth sx={{ color: 'primary.main', mr: 1 }} />
-              <Box>
-                <Typography variant="body2" color="text.secondary">
-                  Check-out
-                </Typography>
-                <Typography variant="body1">
-                  {checkInData?.dates?.checkOut || 'Not selected'}
-                </Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
+        <Typography variant="body1" sx={{ mt: 2, mb: 1 }}>
+          {numberOfDays} day{numberOfDays !== 1 ? 's' : ''} × ${ratePerDay}
+        </Typography>
+        <Typography variant="h6" color="primary.main">
+          ${totalAmount.toFixed(2)}
+        </Typography>
 
-        <Card>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <NightsStay sx={{ color: 'primary.main', mr: 1 }} />
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="body1">
-                  {fees.numberOfDays} day{fees.numberOfDays !== 1 ? 's' : ''} × ${DAILY_RATE}
-                </Typography>
-              </Box>
-              <Typography variant="body1">
-                ${formatCurrency(fees.totalAmount)}
-              </Typography>
-            </Box>
-
-            <Divider sx={{ my: 2 }} />
-
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="h6">
-                  Total Amount
-                </Typography>
-              </Box>
-              <Typography variant="h6" color="primary.main">
-                ${formatCurrency(fees.totalAmount)}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Card>
-
-        <Box sx={{ 
-          display: 'flex', 
-          gap: 2,
-          mt: 'auto',
-        }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
           <Button
+            onClick={handleBack}
             variant="outlined"
-            startIcon={<ArrowBack />}
-            onClick={() => navigate('/date-selection')}
-            sx={{ flex: 1 }}
           >
             Back
           </Button>
           <Button
             variant="contained"
-            endIcon={<ArrowForward />}
-            onClick={handleNext}
-            disabled={fees.totalAmount <= 0}
-            sx={{ 
-              flex: 1,
-              background: 'linear-gradient(45deg, #1976d2, #2196f3)',
-              '&:hover': {
-                background: 'linear-gradient(45deg, #1565c0, #1976d2)',
-              }
-            }}
+            onClick={handleNextClick}
+            color="primary"
           >
             Next
           </Button>
         </Box>
-
-        <Typography 
-          variant="body2" 
-          sx={{ 
-            textAlign: 'center',
-            color: 'text.secondary',
-          }}
-        >
+        <Typography variant="caption" display="block" textAlign="center" sx={{ mt: 2 }}>
           Step 4 of 5
         </Typography>
       </Paper>

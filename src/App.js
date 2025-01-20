@@ -2,13 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import { theme } from './theme';
-import WelcomeScreen from './components/wizard/WelcomeScreen';
-import PersonalDetails from './components/wizard/PersonalDetails';
-import DateSelection from './components/wizard/DateSelection';
-import FeeCalculator from './components/wizard/FeeCalculator';
-import PaymentOptions from './components/wizard/PaymentOptions';
 import { CheckInProvider } from './contexts/CheckInContext';
-import Confirmation from './components/wizard/Confirmation';
+import WizardForm from './components/wizard/WizardForm';
 import Dashboard from './components/dashboard/Dashboard';
 
 function App() {
@@ -17,17 +12,14 @@ function App() {
       <CheckInProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<Navigate to="/welcome" replace />} />
-            
-            <Route path="/welcome" element={<WelcomeScreen />} />
-            <Route path="/personal-details" element={<PersonalDetails />} />
-            <Route path="/date-selection" element={<DateSelection />} />
-            <Route path="/fee-calculator" element={<FeeCalculator />} />
-            <Route path="/payment-options" element={<PaymentOptions />} />
-            <Route path="/confirmation" element={<Confirmation />} />
+            <Route path="/" element={<WizardForm />} />
+            <Route path="/personal-details" element={<WizardForm />} />
+            <Route path="/date-selection" element={<WizardForm />} />
+            <Route path="/fee-calculator" element={<WizardForm />} />
+            <Route path="/payment-options" element={<WizardForm />} />
+            <Route path="/confirmation" element={<WizardForm />} />
             <Route path="/dashboard" element={<Dashboard />} />
-
-            <Route path="*" element={<Navigate to="/welcome" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
       </CheckInProvider>
