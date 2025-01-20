@@ -36,8 +36,9 @@ const Dashboard = () => {
 
   const fetchBookings = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/bookings');
+      const response = await fetch('https://hostel.hudumacenter.org/api/bookings');
       const data = await response.json();
+      console.log('Fetched bookings:', data);
       setBookings(data);
     } catch (error) {
       console.error('Error fetching bookings:', error);
