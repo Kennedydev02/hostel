@@ -24,6 +24,8 @@ import { Search, Delete, Edit } from '@mui/icons-material';
 
 const Dashboard = () => {
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -36,12 +38,22 @@ const Dashboard = () => {
 
   const fetchBookings = async () => {
     try {
-      const response = await fetch('https://hostel.hudumacenter.org/api/bookings');
+      setLoading(true);
+      const response = await fetch('/api/bookings');
+      console.log('API Response:', response); // Debug log
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
-      console.log('Fetched bookings:', data);
+      console.log('Bookings data:', data); // Debug log
       setBookings(data);
     } catch (error) {
       console.error('Error fetching bookings:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,6 +104,10 @@ const Dashboard = () => {
       default: return 'default';
     }
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!bookings.length) return <div>No bookings found</div>;
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

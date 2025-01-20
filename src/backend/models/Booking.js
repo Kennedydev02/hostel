@@ -16,13 +16,10 @@ const bookingSchema = new mongoose.Schema({
   },
   payment: {
     method: { type: String, required: true },
-    type: { type: String },
     status: { type: String, default: 'pending' }
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('Booking', bookingSchema); 

@@ -14,11 +14,14 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "src/backend/index.js"
+      "dest": "/src/backend/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "index.html"
     }
-  ]
+  ],
+  "env": {
+    "MONGODB_URI": "mongodb+srv://hostel_admin:Natalie321@cluster0.7oqts.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+  }
 } 
