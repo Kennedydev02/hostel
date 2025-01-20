@@ -33,6 +33,9 @@ const Dashboard = () => {
   const [editBooking, setEditBooking] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
 
+  // Use the production API URL
+  const API_URL = 'https://admin.hudumacenter.org';
+
   useEffect(() => {
     fetchBookings();
   }, []);
@@ -40,30 +43,25 @@ const Dashboard = () => {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      // Use the correct API URL based on environment
-      const apiUrl = process.env.NODE_ENV === 'production'
-        ? 'https://hostel.hudumacenter.org/api/bookings'
-        : 'http://localhost:5001/api/bookings';
+      const response = await fetch(`${API_URL}/api/bookings`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+      });
 
-      console.log('Attempting to fetch bookings from:', apiUrl);
-      
-      const response = await fetch(apiUrl);
-      console.log('Response status:', response.status);
-      
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Response error:', errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
       const data = await response.json();
-      console.log('Received bookings data:', data);
-      
+      console.log('Bookings data:', data);
       setBookings(data);
       setError(null);
     } catch (error) {
-      console.error('Error details:', error);
-      setError(`Failed to load bookings: ${error.message}`);
+      console.error('Fetch error:', error);
+      setError('Failed to load bookings. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -72,12 +70,22 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this booking?')) {
       try {
-        await fetch(`http://localhost:5001/api/bookings/${id}`, {
-          method: 'DELETE'
+        const response = await fetch(`${API_URL}/api/bookings/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
-        fetchBookings();
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        await fetchBookings();
+        alert('Booking deleted successfully');
       } catch (error) {
-        console.error('Error deleting booking:', error);
+        console.error('Delete error:', error);
+        alert('Failed to delete booking');
       }
     }
   };
@@ -89,17 +97,24 @@ const Dashboard = () => {
 
   const handleUpdate = async () => {
     try {
-      await fetch(`http://localhost:5001/api/bookings/${editBooking._id}`, {
+      const response = await fetch(`${API_URL}/api/bookings/${editBooking._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(editBooking)
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       setOpenDialog(false);
-      fetchBookings();
+      await fetchBookings();
+      alert('Booking updated successfully');
     } catch (error) {
-      console.error('Error updating booking:', error);
+      console.error('Update error:', error);
+      alert('Failed to update booking');
     }
   };
 
