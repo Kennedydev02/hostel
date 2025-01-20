@@ -33,8 +33,8 @@ const Dashboard = () => {
   const [editBooking, setEditBooking] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
 
-  // Use the production API URL
-  const API_URL = 'https://admin.hudumacenter.org';
+  // Update API URL to point to the backend API
+  const API_URL = 'https://api.hudumacenter.org';
 
   useEffect(() => {
     fetchBookings();

@@ -12,10 +12,10 @@ function App() {
       <CheckInProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<Navigate to="/check-in" replace />} />
+            <Route path="/" element={<Dashboard />} />
             <Route path="/check-in/*" element={<WizardForm />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="*" element={<Navigate to="/check-in" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
       </CheckInProvider>
