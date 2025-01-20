@@ -10,9 +10,7 @@ import FeeCalculator from './components/wizard/FeeCalculator';
 import PaymentOptions from './components/wizard/PaymentOptions';
 import { CheckInProvider } from './contexts/CheckInContext';
 import Confirmation from './components/wizard/Confirmation';
-
-// Temporary components
-const Dashboard = () => <div>Dashboard</div>;
+import Dashboard from './components/dashboard/Dashboard';
 
 function App() {
   return (
@@ -28,6 +26,7 @@ function App() {
             <Route path="/fee-calculator" element={<FeeCalculator />} />
             <Route path="/payment-options" element={<PaymentOptions />} />
             <Route path="/confirmation" element={<Confirmation />} />
+            <Route path="/dashboard" element={<Dashboard />} />
 
             <Route path="*" element={<Navigate to="/welcome" replace />} />
           </Routes>

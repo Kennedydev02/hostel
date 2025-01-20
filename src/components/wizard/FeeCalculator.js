@@ -52,8 +52,35 @@ const FeeCalculator = () => {
     return Number(amount).toFixed(2);
   };
 
-  const handleNext = () => {
-    navigate('/payment-options');
+  const handleNext = async () => {
+    try {
+      const bookingData = {
+        personalDetails: checkInData.personalDetails,
+        dates: checkInData.dates,
+        fees: {
+          numberOfDays: fees.numberOfDays,
+          totalAmount: fees.totalAmount
+        },
+        payment: {
+          method: 'Pay at Office',
+          status: 'pending'
+        }
+      };
+
+      const response = await fetch('http://localhost:5001/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData)
+      });
+
+      if (response.ok) {
+        navigate('/payment-options');
+      }
+    } catch (error) {
+      console.error('Error saving booking:', error);
+    }
   };
 
   return (
