@@ -9,10 +9,9 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
-  Divider
+  ListItemText
 } from '@mui/material';
-import { CalendarToday, AttachMoney } from '@mui/icons-material';
+import { CalendarToday } from '@mui/icons-material';
 
 const FeeCalculator = ({ formData, setFormData }) => {
   const navigate = useNavigate();
@@ -44,35 +43,41 @@ const FeeCalculator = ({ formData, setFormData }) => {
   return (
     <Container component="main" maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <Typography variant="h4" gutterBottom align="center" sx={{ color: 'primary.main' }}>
+        <Typography variant="h4" align="center" color="primary" gutterBottom>
           Fee Summary
         </Typography>
-
-        <Typography variant="body1" align="center" sx={{ color: 'text.secondary' }}>
+        <Typography variant="subtitle1" align="center" gutterBottom>
           Review your booking fees
         </Typography>
 
         <List>
           <ListItem>
             <ListItemIcon>
-              <CalendarToday />
+              <CalendarToday color="primary" />
             </ListItemIcon>
-            <ListItemText primary="Check-in" secondary={checkIn ? checkIn.toLocaleDateString() : 'Not selected'} />
+            <ListItemText 
+              primary="Check-in"
+              secondary={checkIn ? checkIn.toLocaleDateString() : ''}
+            />
           </ListItem>
+
           <ListItem>
             <ListItemIcon>
-              <CalendarToday />
+              <CalendarToday color="primary" />
             </ListItemIcon>
-            <ListItemText primary="Check-out" secondary={checkOut ? checkOut.toLocaleDateString() : 'Not selected'} />
+            <ListItemText 
+              primary="Check-out"
+              secondary={checkOut ? checkOut.toLocaleDateString() : ''}
+            />
+          </ListItem>
+
+          <ListItem>
+            <ListItemText 
+              primary={`${numberOfDays} day${numberOfDays > 1 ? 's' : ''} × $${ratePerDay}`}
+              secondary={`Total: $${totalAmount.toFixed(2)}`}
+            />
           </ListItem>
         </List>
-
-        <Typography variant="body1" sx={{ mt: 2, mb: 1 }}>
-          {numberOfDays} day{numberOfDays !== 1 ? 's' : ''} × ${ratePerDay}
-        </Typography>
-        <Typography variant="h6" color="primary.main">
-          ${totalAmount.toFixed(2)}
-        </Typography>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
           <Button
