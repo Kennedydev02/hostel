@@ -12,14 +12,10 @@ function App() {
       <CheckInProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<WizardForm />} />
-            <Route path="/personal-details" element={<WizardForm />} />
-            <Route path="/date-selection" element={<WizardForm />} />
-            <Route path="/fee-calculator" element={<WizardForm />} />
-            <Route path="/payment-options" element={<WizardForm />} />
-            <Route path="/confirmation" element={<WizardForm />} />
+            <Route path="/" element={<Navigate to="/check-in" replace />} />
+            <Route path="/check-in/*" element={<WizardForm />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/check-in" replace />} />
           </Routes>
         </Router>
       </CheckInProvider>
