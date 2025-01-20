@@ -18,7 +18,8 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  TablePagination
+  TablePagination,
+  CircularProgress
 } from '@mui/material';
 import { Search, Delete, Edit } from '@mui/icons-material';
 
@@ -39,19 +40,24 @@ const Dashboard = () => {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/bookings');
-      console.log('API Response:', response); // Debug log
-      
+      // Use the correct API URL based on environment
+      const apiUrl = process.env.NODE_ENV === 'production'
+        ? 'https://hostel.hudumacenter.org/api/bookings'
+        : 'http://localhost:5001/api/bookings';
+
+      console.log('Fetching from:', apiUrl); // Debug log
+
+      const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
       const data = await response.json();
-      console.log('Bookings data:', data); // Debug log
+      console.log('Received data:', data); // Debug log
       setBookings(data);
+      setError(null);
     } catch (error) {
       console.error('Error fetching bookings:', error);
-      setError(error.message);
+      setError('Failed to load bookings. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -91,39 +97,44 @@ const Dashboard = () => {
     }
   };
 
-  const filteredBookings = bookings.filter(booking => 
+  const filteredBookings = bookings.filter(booking =>
     booking.personalDetails.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     booking.personalDetails.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getStatusColor = (status) => {
-    switch(status) {
-      case 'pending': return 'warning';
-      case 'paid': return 'success';
-      case 'cancelled': return 'error';
-      default: return 'default';
-    }
-  };
+  if (loading) {
+    return (
+      <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!bookings.length) return <div>No bookings found</div>;
+  if (error) {
+    return (
+      <Container>
+        <Typography color="error" align="center">
+          {error}
+        </Typography>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Bookings Dashboard
-      </Typography>
-      
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Bookings Dashboard
+        </Typography>
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Search by name or email"
+          placeholder="Search bookings..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ mb: 2 }}
           InputProps={{
-            startAdornment: <Search color="action" sx={{ mr: 1 }} />
+            startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />,
           }}
         />
       </Box>
@@ -152,9 +163,9 @@ const Dashboard = () => {
                   <TableCell>{new Date(booking.dates.checkOut).toLocaleDateString()}</TableCell>
                   <TableCell>${booking.fees.totalAmount}</TableCell>
                   <TableCell>
-                    <Chip 
+                    <Chip
                       label={booking.payment.status}
-                      color={getStatusColor(booking.payment.status)}
+                      color={booking.payment.status === 'completed' ? 'success' : 'warning'}
                       size="small"
                     />
                   </TableCell>
