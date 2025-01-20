@@ -19,6 +19,10 @@ const WelcomeScreen = () => {
   const MotionTypography = motion(Typography);
   const MotionBox = motion(Box);
 
+  const handleStartCheckIn = () => {
+    navigate('personal-details');
+  };
+
   const features = [
     {
       icon: <AccessTime sx={{ fontSize: 32, color: theme.palette.primary.main }} />,
@@ -172,7 +176,7 @@ const WelcomeScreen = () => {
                 variant="contained"
                 size="large"
                 endIcon={<ArrowForward />}
-                onClick={() => navigate('/personal-details')}
+                onClick={handleStartCheckIn}
                 sx={{
                   py: 2,
                   px: 6,
@@ -202,7 +206,7 @@ const WelcomeScreen = () => {
               color: 'text.secondary',
             }}
           >
-            Step 1 of 4
+            Step 1 of 5
           </Typography>
         </Box>
       </MotionPaper>

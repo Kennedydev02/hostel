@@ -33,11 +33,11 @@ const FeeCalculator = ({ formData, setFormData }) => {
         totalAmount
       }
     }));
-    navigate('/payment-options');
+    navigate('../payment-options');
   };
 
   const handleBack = () => {
-    navigate('/date-selection');
+    navigate('../date-selection');
   };
 
   return (

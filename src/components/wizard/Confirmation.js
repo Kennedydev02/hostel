@@ -23,7 +23,7 @@ import {
   Share,
 } from '@mui/icons-material';
 
-const Confirmation = () => {
+const Confirmation = ({ formData }) => {
   const navigate = useNavigate();
   const { checkInData } = useCheckIn();
 
@@ -33,7 +33,11 @@ const Confirmation = () => {
 
   const handleFinish = () => {
     // Here you can add API call to submit the data
-    navigate('/welcome');
+    navigate('/');
+  };
+
+  const handleBack = () => {
+    navigate('../payment-options');
   };
 
   const handleDownload = () => {
@@ -201,7 +205,7 @@ const Confirmation = () => {
           <Button
             variant="outlined"
             startIcon={<ArrowBack />}
-            onClick={() => navigate('/payment-options')}
+            onClick={handleBack}
             sx={{ flex: 1 }}
           >
             Back

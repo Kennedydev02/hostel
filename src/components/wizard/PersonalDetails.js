@@ -19,14 +19,9 @@ import {
   Phone,
 } from '@mui/icons-material';
 
-const PersonalDetails = () => {
+const PersonalDetails = ({ formData, setFormData }) => {
   const navigate = useNavigate();
   const { checkInData, updateCheckInData } = useCheckIn();
-  const [formData, setFormData] = useState({
-    fullName: checkInData?.personalDetails?.fullName || '',
-    email: checkInData?.personalDetails?.email || '',
-    phone: checkInData?.personalDetails?.phone || '',
-  });
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
 
@@ -72,8 +67,12 @@ const PersonalDetails = () => {
   const handleNext = () => {
     if (validateForm()) {
       updateCheckInData('personalDetails', formData);
-      navigate('/date-selection');
+      navigate('../date-selection');
     }
+  };
+
+  const handleBack = () => {
+    navigate('../');
   };
 
   return (
@@ -161,7 +160,7 @@ const PersonalDetails = () => {
           <Button
             variant="outlined"
             startIcon={<ArrowBack />}
-            onClick={() => navigate('/')}
+            onClick={handleBack}
             sx={{ flex: 1 }}
           >
             Back

@@ -22,7 +22,7 @@ import {
   CheckCircle,
 } from '@mui/icons-material';
 
-const PaymentOptions = () => {
+const PaymentOptions = ({ formData, setFormData }) => {
   const navigate = useNavigate();
   const { checkInData, updateCheckInData } = useCheckIn();
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -53,7 +53,11 @@ const PaymentOptions = () => {
       method: paymentMethod,
       type: paymentType 
     });
-    navigate('/confirmation');
+    navigate('../confirmation');
+  };
+
+  const handleBack = () => {
+    navigate('../fee-calculator');
   };
 
   const formatCurrency = (amount) => {
@@ -169,7 +173,7 @@ const PaymentOptions = () => {
           <Button
             variant="outlined"
             startIcon={<ArrowBack />}
-            onClick={() => navigate('/date-selection')}
+            onClick={handleBack}
             sx={{ flex: 1 }}
           >
             Back

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { Container, Paper, Stepper, Step, StepLabel } from '@mui/material';
 import WelcomeScreen from './WelcomeScreen';
 import DateSelection from './DateSelection';
@@ -28,39 +28,20 @@ const WizardForm = () => {
 
   const getActiveStep = () => {
     switch (location.pathname) {
-      case '/':
+      case '/check-in':
         return 0;
-      case '/personal-details':
+      case '/check-in/personal-details':
         return 1;
-      case '/date-selection':
+      case '/check-in/date-selection':
         return 2;
-      case '/fee-calculator':
+      case '/check-in/fee-calculator':
         return 3;
-      case '/payment-options':
+      case '/check-in/payment-options':
         return 4;
-      case '/confirmation':
+      case '/check-in/confirmation':
         return 5;
       default:
         return 0;
-    }
-  };
-
-  const getStepContent = (step) => {
-    switch (step) {
-      case 0:
-        return <WelcomeScreen />;
-      case 1:
-        return <PersonalDetails formData={formData} setFormData={setFormData} />;
-      case 2:
-        return <DateSelection formData={formData} setFormData={setFormData} />;
-      case 3:
-        return <FeeCalculator formData={formData} setFormData={setFormData} />;
-      case 4:
-        return <PaymentOptions formData={formData} setFormData={setFormData} />;
-      case 5:
-        return <Confirmation formData={formData} />;
-      default:
-        return 'Unknown step';
     }
   };
 
@@ -74,7 +55,25 @@ const WizardForm = () => {
             </Step>
           ))}
         </Stepper>
-        {getStepContent(getActiveStep())}
+        
+        <Routes>
+          <Route path="/" element={<WelcomeScreen />} />
+          <Route path="/personal-details" element={
+            <PersonalDetails formData={formData} setFormData={setFormData} />
+          } />
+          <Route path="/date-selection" element={
+            <DateSelection formData={formData} setFormData={setFormData} />
+          } />
+          <Route path="/fee-calculator" element={
+            <FeeCalculator formData={formData} setFormData={setFormData} />
+          } />
+          <Route path="/payment-options" element={
+            <PaymentOptions formData={formData} setFormData={setFormData} />
+          } />
+          <Route path="/confirmation" element={
+            <Confirmation formData={formData} />
+          } />
+        </Routes>
       </Paper>
     </Container>
   );

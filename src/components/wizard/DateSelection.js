@@ -17,7 +17,7 @@ import {
   NightsStay,
 } from '@mui/icons-material';
 
-const DateSelection = () => {
+const DateSelection = ({ formData, setFormData }) => {
   const navigate = useNavigate();
   const { checkInData, updateCheckInData } = useCheckIn();
   const [dates, setDates] = useState({
@@ -48,8 +48,12 @@ const DateSelection = () => {
   const handleNext = () => {
     if (dates.checkIn && dates.checkOut && numberOfNights > 0) {
       updateCheckInData('dates', dates);
-      navigate('/fee-calculator');
+      navigate('../fee-calculator');
     }
+  };
+
+  const handleBack = () => {
+    navigate('../personal-details');
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -115,7 +119,7 @@ const DateSelection = () => {
           <Button
             variant="outlined"
             startIcon={<ArrowBack />}
-            onClick={() => navigate('/personal-details')}
+            onClick={handleBack}
             sx={{ flex: 1 }}
           >
             Back
