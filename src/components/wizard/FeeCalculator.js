@@ -15,7 +15,6 @@ import {
   ArrowBack,
   ArrowForward,
   CalendarMonth,
-  AttachMoney,
   NightsStay,
 } from '@mui/icons-material';
 

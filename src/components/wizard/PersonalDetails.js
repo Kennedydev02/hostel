@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCheckIn } from '../../contexts/CheckInContext';
 import {
@@ -18,7 +18,6 @@ import {
   Email,
   Phone,
 } from '@mui/icons-material';
-import { motion } from 'framer-motion';
 
 const PersonalDetails = () => {
   const navigate = useNavigate();
@@ -31,34 +30,36 @@ const PersonalDetails = () => {
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
 
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     const newErrors = {};
-    
-    // Validate full name (at least 3 characters)
-    if (!formData.fullName || formData.fullName.length < 3) {
-      newErrors.fullName = 'Full name must be at least 3 characters';
+    let isValid = true;
+
+    if (!formData.fullName) {
+      newErrors.fullName = 'Full name is required';
+      isValid = false;
     }
 
-    // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email || !emailRegex.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email is invalid';
+      isValid = false;
     }
 
-    // Validate phone (at least 10 digits)
-    const phoneRegex = /^\d{10,}$/;
-    if (!formData.phone || !phoneRegex.test(formData.phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
+    if (!formData.phone) {
+      newErrors.phone = 'Phone number is required';
+      isValid = false;
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setIsFormValid(isValid);
+    return isValid;
+  }, [formData]);
 
   useEffect(() => {
-    const isValid = validateForm();
-    setIsFormValid(isValid);
-  }, [formData]);
+    validateForm();
+  }, [validateForm]);
 
   const handleInputChange = (field) => (event) => {
     const value = event.target.value;

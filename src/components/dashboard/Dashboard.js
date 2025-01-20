@@ -45,19 +45,25 @@ const Dashboard = () => {
         ? 'https://hostel.hudumacenter.org/api/bookings'
         : 'http://localhost:5001/api/bookings';
 
-      console.log('Fetching from:', apiUrl); // Debug log
-
+      console.log('Attempting to fetch bookings from:', apiUrl);
+      
       const response = await fetch(apiUrl);
+      console.log('Response status:', response.status);
+      
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Response error:', errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
       const data = await response.json();
-      console.log('Received data:', data); // Debug log
+      console.log('Received bookings data:', data);
+      
       setBookings(data);
       setError(null);
     } catch (error) {
-      console.error('Error fetching bookings:', error);
-      setError('Failed to load bookings. Please try again later.');
+      console.error('Error details:', error);
+      setError(`Failed to load bookings: ${error.message}`);
     } finally {
       setLoading(false);
     }

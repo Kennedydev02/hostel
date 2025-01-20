@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import { theme } from './theme';
-import Layout from './components/common/Layout';
 import WelcomeScreen from './components/wizard/WelcomeScreen';
 import PersonalDetails from './components/wizard/PersonalDetails';
 import DateSelection from './components/wizard/DateSelection';

@@ -9,7 +9,6 @@ import {
   Paper,
   Card,
   CardContent,
-  Divider,
 } from '@mui/material';
 import {
   ArrowBack,
